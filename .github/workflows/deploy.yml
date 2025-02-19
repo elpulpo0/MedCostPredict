@@ -30,9 +30,6 @@ jobs:
       run: |
         flake8 .
 
-    # - name: Run tests with pytest
-    #   run: |
-    #     pytest tests/tests.py
-    - name: Print Hello
+    - name: Run tests with pytest
       run: |
-        python tests/hello.py
+        pytest
