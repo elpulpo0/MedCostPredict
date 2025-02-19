@@ -19,7 +19,7 @@ def get_patients():
         SELECT p.id, p.name, p.surname, p.age, p.bmi, p.children, p.charges,
                s.sexe AS sex, f.fumeur AS smoker, r.region
         FROM Patient p
-        LEFT JOIN Sexe s ON p.id_sex = s.id_sex
+        LEFT JOIN Sexe s ON p.sex = s.id_sex
         LEFT JOIN Fumeur f ON p.smoker = f.id_smoker
         LEFT JOIN Region r ON p.region = r.id_region
         """
@@ -42,7 +42,7 @@ def get_patient(patient_id: int):
         SELECT p.id, p.name, p.surname, p.age, p.bmi, p.children, p.charges,
                s.sexe AS sex, f.fumeur AS smoker, r.region
         FROM Patient p
-        LEFT JOIN Sexe s ON p.id_sex = s.id_sex
+        LEFT JOIN Sexe s ON p.sex = s.id_sex
         LEFT JOIN Fumeur f ON p.smoker = f.id_smoker
         LEFT JOIN Region r ON p.region = r.id_region
         WHERE p.id = ?
@@ -69,10 +69,39 @@ def create_patient(patient: PatientCreate):
     anonymized_name = anonymize_name(patient.name)
     anonymized_surname = anonymize_name(patient.surname)
 
+    # Récupérer l'ID correspondant au sexe
+    cursor.execute("SELECT id_sex FROM Sexe WHERE sexe = ?", (patient.sex,))
+    sex_row = cursor.fetchone()
+    if not sex_row:
+        raise HTTPException(status_code=400, detail="Invalid value for sex.")
+    sex = sex_row["id_sex"]
+
+    # Récupérer l'ID correspondant à la région
+    cursor.execute(
+        "SELECT id_region FROM Region WHERE region = ?", (patient.region,)
+    )
+    region_row = cursor.fetchone()
+    if not region_row:
+        raise HTTPException(
+            status_code=400, detail="Invalid value for region."
+        )
+    region = region_row["id_region"]
+
+    # Récupérer l'ID correspondant à la valeur de fumeur
+    cursor.execute(
+        "SELECT id_smoker FROM Fumeur WHERE fumeur = ?", (patient.smoker,)
+    )
+    smoker_row = cursor.fetchone()
+    if not smoker_row:
+        raise HTTPException(
+            status_code=400, detail="Invalid value for smoker."
+        )
+    smoker = smoker_row["id_smoker"]
+
+    # Insérer le patient dans la table Patient avec les IDs obtenus
     cursor.execute(
         """
-        INSERT INTO Patient (name, surname, age, bmi,
-        children, smoker, region, charges, id_sex)
+        INSERT INTO Patient (name, surname, age, bmi, children, smoker, region, charges, sex)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
@@ -81,10 +110,10 @@ def create_patient(patient: PatientCreate):
             patient.age,
             patient.bmi,
             patient.children,
-            patient.smoker,
-            patient.region,
+            smoker,
+            region,
             patient.charges,
-            patient.sex,
+            sex,
         ),
     )
 
@@ -98,7 +127,6 @@ def create_patient(patient: PatientCreate):
         "name": anonymized_name,
         "surname": anonymized_surname,
     }
-
 
 @router.put(
     "/patients/{patient_id}",
@@ -119,7 +147,7 @@ def update_patient(patient_id: int, patient: PatientUpdate):
         """
         UPDATE Patient
         SET name = ?, surname = ?, age = ?, bmi = ?, children = ?,
-        smoker = ?, region = ?, charges = ?, id_sex = ?
+        smoker = ?, region = ?, charges = ?, sex = ?
         WHERE id = ?
         """,
         (

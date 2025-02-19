@@ -45,13 +45,13 @@ cursor.executescript(
         name TEXT NOT NULL,
         surname TEXT NOT NULL,
         age INTEGER,
-        id_sex INTEGER,
+        sex INTEGER,
         bmi REAL,
         children INTEGER,
         smoker INTEGER,
         region INTEGER,
         charges REAL,
-        FOREIGN KEY (id_sex) REFERENCES Sexe(id_sex),
+        FOREIGN KEY (sex) REFERENCES Sexe(id_sex),
         FOREIGN KEY (smoker) REFERENCES Fumeur(id_smoker),
         FOREIGN KEY (region) REFERENCES Region(id_region)
     );
@@ -111,7 +111,7 @@ for _, row in df_patients.iterrows():
     # Insérer les données du patient
     cursor.execute(
         """
-        INSERT INTO Patient (name, surname, age, id_sex,
+        INSERT INTO Patient (name, surname, age, sex,
         bmi, children, smoker, region, charges)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
         """,

@@ -20,7 +20,7 @@ class PatientCreate(BaseModel):
     name: str
     surname: str
     age: int
-    sex: int
+    sex: str
     bmi: float
     children: int
     smoker: str
@@ -33,7 +33,7 @@ class PatientUpdate(BaseModel):
     name: str
     surname: str
     age: int
-    sex: int
+    sex: str
     bmi: float
     children: int
     smoker: str
