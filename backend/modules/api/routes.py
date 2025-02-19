@@ -16,8 +16,8 @@ def get_patients():
     cursor = conn.cursor()
     cursor.execute(
         """
-        SELECT p.id, p.name, p.surname, p.age, p.bmi, p.children, p.charges, 
-               s.sexe AS sex, f.fumeur AS smoker, r.region 
+        SELECT p.id, p.name, p.surname, p.age, p.bmi, p.children, p.charges,
+               s.sexe AS sex, f.fumeur AS smoker, r.region
         FROM Patient p
         LEFT JOIN Sexe s ON p.id_sex = s.id_sex
         LEFT JOIN Fumeur f ON p.smoker = f.id_smoker
@@ -39,8 +39,8 @@ def get_patient(patient_id: int):
     cursor = conn.cursor()
     cursor.execute(
         """
-        SELECT p.id, p.name, p.surname, p.age, p.bmi, p.children, p.charges, 
-               s.sexe AS sex, f.fumeur AS smoker, r.region 
+        SELECT p.id, p.name, p.surname, p.age, p.bmi, p.children, p.charges,
+               s.sexe AS sex, f.fumeur AS smoker, r.region
         FROM Patient p
         LEFT JOIN Sexe s ON p.id_sex = s.id_sex
         LEFT JOIN Fumeur f ON p.smoker = f.id_smoker
@@ -71,7 +71,7 @@ def create_patient(patient: PatientCreate):
 
     cursor.execute(
         """
-        INSERT INTO Patient (name, surname, age, bmi, 
+        INSERT INTO Patient (name, surname, age, bmi,
         children, smoker, region, charges, id_sex)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
@@ -117,8 +117,8 @@ def update_patient(patient_id: int, patient: PatientUpdate):
 
     cursor.execute(
         """
-        UPDATE Patient 
-        SET name = ?, surname = ?, age = ?, bmi = ?, children = ?, 
+        UPDATE Patient
+        SET name = ?, surname = ?, age = ?, bmi = ?, children = ?,
         smoker = ?, region = ?, charges = ?, id_sex = ?
         WHERE id = ?
         """,

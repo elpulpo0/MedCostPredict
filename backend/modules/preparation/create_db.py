@@ -111,7 +111,7 @@ for _, row in df_patients.iterrows():
     # Insérer les données du patient
     cursor.execute(
         """
-        INSERT INTO Patient (name, surname, age, id_sex, 
+        INSERT INTO Patient (name, surname, age, id_sex,
         bmi, children, smoker, region, charges)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
         """,
