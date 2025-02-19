@@ -61,7 +61,7 @@ cursor.executescript(
 # Charger le fichier CSV des patients
 df_patients = pd.read_csv(patients_file)
 
-# Insérer les valeurs dans les tables Sexe, Fumeur et Region pour éviter les doublons
+# Insérer les valeurs dans les tables
 sex_values = df_patients["sex"].unique()
 smoker_values = df_patients["smoker"].unique()
 region_values = df_patients["region"].unique()
@@ -111,7 +111,8 @@ for _, row in df_patients.iterrows():
     # Insérer les données du patient
     cursor.execute(
         """
-        INSERT INTO Patient (name, surname, age, id_sex, bmi, children, smoker, region, charges)
+        INSERT INTO Patient (name, surname, age, id_sex, 
+        bmi, children, smoker, region, charges)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
         """,
         (

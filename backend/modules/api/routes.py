@@ -71,7 +71,8 @@ def create_patient(patient: PatientCreate):
 
     cursor.execute(
         """
-        INSERT INTO Patient (name, surname, age, bmi, children, smoker, region, charges, id_sex)
+        INSERT INTO Patient (name, surname, age, bmi, 
+        children, smoker, region, charges, id_sex)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
@@ -117,7 +118,8 @@ def update_patient(patient_id: int, patient: PatientUpdate):
     cursor.execute(
         """
         UPDATE Patient 
-        SET name = ?, surname = ?, age = ?, bmi = ?, children = ?, smoker = ?, region = ?, charges = ?, id_sex = ?
+        SET name = ?, surname = ?, age = ?, bmi = ?, children = ?, 
+        smoker = ?, region = ?, charges = ?, id_sex = ?
         WHERE id = ?
         """,
         (
