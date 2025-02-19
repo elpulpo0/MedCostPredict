@@ -16,7 +16,9 @@ logger.info("Début du script d'ajout de colonnes.")
 fake = Faker("en_US")
 
 csv_path = Path(__file__).resolve().parents[3] / "data" / "insurance.csv"
-output_path = Path(__file__).resolve().parents[3] / "data" / "insurance_with_names.csv"
+output_path = (
+    Path(__file__).resolve().parents[3] / "data" / "insurance_with_names.csv"
+)
 
 
 def add_fake_names(input_csv=csv_path, output_csv=output_path):

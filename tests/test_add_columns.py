@@ -1,15 +1,18 @@
+import sys
+from pathlib import Path
 import pytest
 import pandas as pd
-from pathlib import Path
-import sys
 
+# Ajouter le répertoire parent à sys.path si nécessaire
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from backend.modules.preparation.add_columns import add_fake_names
 
 # Chemins de test
 TEST_CSV = Path(__file__).resolve().parent / "test_insurance.csv"
-TEST_OUTPUT_CSV = Path(__file__).resolve().parent / "test_insurance_with_names.csv"
+TEST_OUTPUT_CSV = (
+    Path(__file__).resolve().parent / "test_insurance_with_names.csv"
+)
 
 
 @pytest.fixture
