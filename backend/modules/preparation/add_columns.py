@@ -3,7 +3,7 @@ from faker import Faker
 from pathlib import Path
 from loguru import logger
 
-log_path = Path(__file__).resolve().parents[4] / "logs" / "add_columns.log"
+log_path = Path(__file__).resolve().parents[3] / "logs" / "add_columns.log"
 logger.add(
     log_path,
     rotation="1 MB",

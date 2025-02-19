@@ -4,7 +4,7 @@ from pathlib import Path
 from loguru import logger
 
 # Chemin pour enregistrer les logs
-log_path = Path(__file__).resolve().parents[4] / "logs" / "anonymize.log"
+log_path = Path(__file__).resolve().parents[3] / "logs" / "anonymize.log"
 logger.add(
     log_path,
     rotation="1 MB",
