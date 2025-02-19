@@ -1,18 +1,41 @@
 from pydantic import BaseModel
 
 
-# Modèle de données pour un patient (utilisé pour la validation)
+# Modèle principal pour l'affichage des patients
 class Patient(BaseModel):
     id: int
     name: str
     surname: str
     age: int
-    sex: str  # sex est maintenant une chaîne ("Male" ou "Female")
+    sex: str
     bmi: float
     children: int
-    smoker: str  # smoker est maintenant une chaîne ("oui" ou "non")
-    region: str  # region est une chaîne (nom de la région)
+    smoker: str
+    region: str
     charges: float
 
-    class Config:
-        orm_mode = True  # Permet à Pydantic de travailler avec les ORM et les résultats SQL
+
+# Modèle pour la création d'un patient (sans ID)
+class PatientCreate(BaseModel):
+    name: str
+    surname: str
+    age: int
+    sex: int
+    bmi: float
+    children: int
+    smoker: str
+    region: str
+    charges: float
+
+
+# Modèle pour la mise à jour d'un patient
+class PatientUpdate(BaseModel):
+    name: str
+    surname: str
+    age: int
+    sex: int
+    bmi: float
+    children: int
+    smoker: str
+    region: str
+    charges: float
