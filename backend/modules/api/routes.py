@@ -101,7 +101,8 @@ def create_patient(patient: PatientCreate):
     # Insérer le patient dans la table Patient avec les IDs obtenus
     cursor.execute(
         """
-        INSERT INTO Patient (name, surname, age, bmi, children, smoker, region, charges, sex)
+        INSERT INTO Patient (name, surname, age, bmi,
+        children, smoker, region, charges, sex)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
