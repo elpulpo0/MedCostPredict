@@ -4,7 +4,12 @@ from pathlib import Path
 from loguru import logger
 
 log_path = Path(__file__).resolve().parents[4] / "logs" / "add_columns.log"
-logger.add(log_path, rotation="1 MB", level="INFO", format="<level>{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}</level>")
+logger.add(
+    log_path,
+    rotation="1 MB",
+    level="INFO",
+    format="<level>{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}</level>",
+)
 
 logger.info("Début du script d'ajout de colonnes.")
 
@@ -12,6 +17,7 @@ fake = Faker("en_US")
 
 csv_path = Path(__file__).resolve().parents[3] / "data" / "insurance.csv"
 output_path = Path(__file__).resolve().parents[3] / "data" / "insurance_with_names.csv"
+
 
 def add_fake_names(input_csv=csv_path, output_csv=output_path):
     """Ajoute les colonnes name et surname à un fichier CSV."""
@@ -30,6 +36,7 @@ def add_fake_names(input_csv=csv_path, output_csv=output_path):
     except Exception as e:
         logger.error(f"❌ Erreur lors de l'ajout des colonnes : {e}")
         raise
+
 
 if __name__ == "__main__":
     add_fake_names()
