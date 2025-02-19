@@ -1,0 +1,24 @@
+# Environnement virtuel
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+__init__.py
+
+# Pytest
+.pytest_cache
+
+# Système
+.DS_Store
+**/.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Données générées
+/data
+/logs
