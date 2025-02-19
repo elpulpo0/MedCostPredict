@@ -1,4 +1,5 @@
 from backend.modules.api.functions import get_db_connection
+from backend.utils.anonymize import anonymize_name
 from backend.modules.api.models import Patient, PatientCreate, PatientUpdate
 from fastapi import APIRouter, HTTPException
 from typing import List
