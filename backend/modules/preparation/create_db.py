@@ -12,128 +12,118 @@ logger.add(
     format="<level>{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}</level>",
 )
 
-logger.info("Début de la génération des fichiers complémentaires.")
+logger.info("Début de la génération de la base de données.")
 
-# Définition des chemins des fichiers CSV
+# Définir le chemin du fichier CSV
 data_dir = Path(__file__).resolve().parents[3] / "data"
 patients_file = data_dir / "insurance_anonymized.csv"
-medecins_file = data_dir / "medecins.csv"
-consultations_file = data_dir / "consultations.csv"
-diagnostics_file = data_dir / "diagnostics.csv"
 
 # Connexion à la base de données SQLite
 conn = sqlite3.connect("backend/modules/db/patients.db")
 cursor = conn.cursor()
 
-# Création des tables (si elles n'existent pas déjà)
+# Création des tables
 cursor.executescript(
     """
+    CREATE TABLE IF NOT EXISTS Sexe (
+        id_sex INTEGER PRIMARY KEY AUTOINCREMENT,
+        sexe TEXT NOT NULL -- Homme ou Femme
+    );
+
+    CREATE TABLE IF NOT EXISTS Fumeur (
+        id_smoker INTEGER PRIMARY KEY AUTOINCREMENT,
+        fumeur TEXT CHECK(fumeur IN ('yes', 'no')) -- Oui ou Non
+    );
+
+    CREATE TABLE IF NOT EXISTS Region (
+        id_region INTEGER PRIMARY KEY AUTOINCREMENT,
+        region TEXT NOT NULL -- Nom de la région
+    );
+
     CREATE TABLE IF NOT EXISTS Patient (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         surname TEXT NOT NULL,
         age INTEGER,
-        sex TEXT,
+        id_sex INTEGER,
         bmi REAL,
         children INTEGER,
-        smoker TEXT CHECK(smoker IN ('yes', 'no')),
-        region TEXT,
-        charges REAL
-    );
-
-    CREATE TABLE IF NOT EXISTS Médecin (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        surname TEXT NOT NULL,
-        specialty TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS Consultation (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        patient_id INTEGER,
-        doctor_id INTEGER,
-        consultation_date DATE,
-        FOREIGN KEY (patient_id) REFERENCES Patient(id),
-        FOREIGN KEY (doctor_id) REFERENCES Médecin(id)
-    );
-
-    CREATE TABLE IF NOT EXISTS Diagnostique (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        consultation_id INTEGER,
-        diagnostic_description TEXT,
-        FOREIGN KEY (consultation_id) REFERENCES Consultation(id)
+        smoker INTEGER,
+        region INTEGER,
+        charges REAL,
+        FOREIGN KEY (id_sex) REFERENCES Sexe(id_sex),
+        FOREIGN KEY (smoker) REFERENCES Fumeur(id_smoker),
+        FOREIGN KEY (region) REFERENCES Region(id_region)
     );
     """
 )
 
-# Charger et insérer les patients
+# Charger le fichier CSV des patients
 df_patients = pd.read_csv(patients_file)
-df_patients["id"] = range(1, len(df_patients) + 1)
 
+# Insérer les valeurs dans les tables Sexe, Fumeur et Region pour éviter les doublons
+sex_values = df_patients["sex"].unique()
+smoker_values = df_patients["smoker"].unique()
+region_values = df_patients["region"].unique()
+
+# Insérer les valeurs dans la table Sexe
+for sex in sex_values:
+    cursor.execute("INSERT OR IGNORE INTO Sexe (sexe) VALUES (?);", (sex,))
+
+# Insérer les valeurs dans la table Fumeur
+for smoker in smoker_values:
+    cursor.execute(
+        "INSERT OR IGNORE INTO Fumeur (fumeur) VALUES (?);", (smoker,)
+    )
+
+# Insérer les valeurs dans la table Region
+for region in region_values:
+    cursor.execute(
+        "INSERT OR IGNORE INTO Region (region) VALUES (?);", (region,)
+    )
+
+# Commit pour valider les insertions dans Sexe, Fumeur et Region
+conn.commit()
+
+# Insérer les données des patients dans la table Patient
 for _, row in df_patients.iterrows():
+    # Récupérer les ID correspondant aux valeurs de sexe, fumeur et région
+    cursor.execute("SELECT id_sex FROM Sexe WHERE sexe = ?", (row["sex"],))
+    id_sex = cursor.fetchone()
+    id_sex = id_sex[0] if id_sex else None  # Si aucun résultat, définir à None
+
+    cursor.execute(
+        "SELECT id_smoker FROM Fumeur WHERE fumeur = ?", (row["smoker"],)
+    )
+    id_smoker = cursor.fetchone()
+    id_smoker = (
+        id_smoker[0] if id_smoker else None
+    )  # Si aucun résultat, définir à None
+
+    cursor.execute(
+        "SELECT id_region FROM Region WHERE region = ?", (row["region"],)
+    )
+    id_region = cursor.fetchone()
+    id_region = (
+        id_region[0] if id_region else None
+    )  # Si aucun résultat, définir à None
+
+    # Insérer les données du patient
     cursor.execute(
         """
-        INSERT INTO Patient (id, age, sex, bmi, children, smoker, region, charges, name, surname)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        INSERT INTO Patient (name, surname, age, id_sex, bmi, children, smoker, region, charges)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
         """,
         (
-            row["id"],
+            row["name"],
+            row["surname"],
             row["age"],
-            row["sex"],
+            id_sex,
             row["bmi"],
             row["children"],
-            row["smoker"],
-            row["region"],
+            id_smoker,
+            id_region,
             row["charges"],
-            row["name"],
-            row["surname"],
-        ),
-    )
-
-# Charger et insérer les médecins
-df_medecins = pd.read_csv(medecins_file)
-for _, row in df_medecins.iterrows():
-    cursor.execute(
-        """
-        INSERT INTO Médecin (id, name, surname, specialty)
-        VALUES (?, ?, ?, ?);
-        """,
-        (
-            row["id"],
-            row["name"],
-            row["surname"],
-            row["specialty"],
-        ),
-    )
-
-# Charger et insérer les consultations
-df_consultations = pd.read_csv(consultations_file)
-for _, row in df_consultations.iterrows():
-    cursor.execute(
-        """
-        INSERT INTO Consultation (id, patient_id, doctor_id, consultation_date)
-        VALUES (?, ?, ?, ?);
-        """,
-        (
-            row["id"],
-            row["patient_id"],
-            row["medecin_id"],
-            row["date"],
-        ),
-    )
-
-# Charger et insérer les diagnostics
-df_diagnostics = pd.read_csv(diagnostics_file)
-for _, row in df_diagnostics.iterrows():
-    cursor.execute(
-        """
-        INSERT INTO Diagnostique (id, consultation_id, diagnostic_description)
-        VALUES (?, ?, ?);
-        """,
-        (
-            row["id"],
-            row["consultation_id"],
-            row["diagnosis"],
         ),
     )
 
@@ -141,6 +131,6 @@ for _, row in df_diagnostics.iterrows():
 conn.commit()
 conn.close()
 
-print(
-    "Toutes les données ont été insérées avec succès dans la base de données."
+logger.info(
+    "Les données ont été insérées avec succès dans la base de données."
 )

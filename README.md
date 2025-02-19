@@ -38,4 +38,4 @@ https://www.kaggle.com/datasets/mirichoi0218/insurance
 
 **Run the app**
 
-`streamlit run interface/app.py`
+`uvicorn backend/main:app --reload`

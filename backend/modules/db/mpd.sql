@@ -1,36 +1,34 @@
-CREATE TABLE IF NOT EXISTS Patient (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    surname TEXT NOT NULL,
-    age INTEGER,
-    sex TEXT,
-    bmi REAL,
-    children INTEGER,
-    smoker TEXT CHECK(smoker IN ('yes', 'no')),
-    region TEXT,
-    charges REAL
+-- Table Sexe
+CREATE TABLE Sexe (
+    id_sex INT AUTO_INCREMENT PRIMARY KEY,
+    sexe VARCHAR(10) NOT NULL -- Homme ou Femme
 );
 
-CREATE TABLE IF NOT EXISTS Médecin (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    specialty TEXT NOT NULL
+-- Table Fumeur
+CREATE TABLE Fumeur (
+    id_smoker INT AUTO_INCREMENT PRIMARY KEY,
+    fumeur VARCHAR(3) NOT NULL -- Oui ou Non
 );
 
-CREATE TABLE IF NOT EXISTS Consultation (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    patient_id INTEGER,
-    doctor_id INTEGER,
-    consultation_date DATE,
-    reason TEXT,
-    FOREIGN KEY (patient_id) REFERENCES Patient(id),
-    FOREIGN KEY (doctor_id) REFERENCES Médecin(id)
+-- Table Region
+CREATE TABLE Region (
+    id_region INT AUTO_INCREMENT PRIMARY KEY,
+    region VARCHAR(255) NOT NULL -- Nom de la région
 );
 
-CREATE TABLE IF NOT EXISTS Diagnostique (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    consultation_id INTEGER,
-    diagnostic_description TEXT,
-    diagnosis_date DATE,
-    FOREIGN KEY (consultation_id) REFERENCES Consultation(id)
+-- Table Patient
+CREATE TABLE Patient (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    surname VARCHAR(255) NOT NULL,
+    age INT NOT NULL,
+    id_sex INT,
+    bmi FLOAT,
+    children INT,
+    smoker INT,
+    region INT,
+    charges FLOAT,
+    FOREIGN KEY (id_sex) REFERENCES Sexe(id_sex),
+    FOREIGN KEY (smoker) REFERENCES Fumeur(id_smoker),
+    FOREIGN KEY (region) REFERENCES Region(id_region)
 );
