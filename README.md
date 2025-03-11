@@ -38,4 +38,4 @@ https://www.kaggle.com/datasets/mirichoi0218/insurance
 
 **Run the app**
 
-`uvicorn backend/main:app --reload`
+`uvicorn backend.main:app --reload`

@@ -24,3 +24,4 @@ __init__.py
 /logs
 patients.db
 tree.py
+.env

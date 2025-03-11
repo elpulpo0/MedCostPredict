@@ -3,7 +3,7 @@ from faker import Faker
 from pathlib import Path
 from loguru import logger
 
-log_path = Path(__file__).resolve().parents[3] / "logs" / "add_columns.log"
+log_path = Path(__file__).resolve().parents[5] / "logs" / "add_columns.log"
 logger.add(
     log_path,
     rotation="1 MB",
@@ -15,9 +15,9 @@ logger.info("Début du script d'ajout de colonnes.")
 
 fake = Faker("en_US")
 
-csv_path = Path(__file__).resolve().parents[3] / "data" / "insurance.csv"
+csv_path = Path(__file__).resolve().parents[5] / "data" / "insurance.csv"
 output_path = (
-    Path(__file__).resolve().parents[3] / "data" / "insurance_with_names.csv"
+    Path(__file__).resolve().parents[5] / "data" / "insurance_with_names.csv"
 )
 
 

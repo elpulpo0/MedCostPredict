@@ -1,15 +1,21 @@
-from backend.modules.api.functions import get_db_connection
+from backend.modules.api.patients.functions import get_db_connection
 from backend.utils.anonymize import anonymize_name
-from backend.modules.api.models import Patient, PatientCreate, PatientUpdate
+from backend.modules.api.patients.models import (
+    Patient,
+    PatientCreate,
+    PatientUpdate,
+)
 from fastapi import APIRouter, HTTPException
 from typing import List
-
 
 router = APIRouter()
 
 
 @router.get(
-    "/patients", response_model=List[Patient], summary="Get all patients"
+    "/patients",
+    response_model=List[Patient],
+    summary="Get all patients",
+    tags=["Données des patients"],
 )
 def get_patients():
     conn = get_db_connection()
@@ -33,6 +39,7 @@ def get_patients():
     "/patients/{patient_id}",
     response_model=Patient,
     summary="Get a patient by ID",
+    tags=["Données des patients"],
 )
 def get_patient(patient_id: int):
     conn = get_db_connection()
@@ -59,7 +66,10 @@ def get_patient(patient_id: int):
 
 
 @router.post(
-    "/patients", response_model=Patient, summary="Create a new patient"
+    "/patients",
+    response_model=Patient,
+    summary="Create a new patient",
+    tags=["Données des patients"],
 )
 def create_patient(patient: PatientCreate):
     conn = get_db_connection()
@@ -129,10 +139,12 @@ def create_patient(patient: PatientCreate):
         "surname": anonymized_surname,
     }
 
+
 @router.put(
     "/patients/{patient_id}",
     response_model=Patient,
     summary="Update a patient",
+    tags=["Données des patients"],
 )
 def update_patient(patient_id: int, patient: PatientUpdate):
     conn = get_db_connection()
@@ -171,7 +183,11 @@ def update_patient(patient_id: int, patient: PatientUpdate):
     return {**patient.model_dump(), "id": patient_id}
 
 
-@router.delete("/patients/{patient_id}", summary="Delete a patient")
+@router.delete(
+    "/patients/{patient_id}",
+    summary="Delete a patient",
+    tags=["Données des patients"],
+)
 def delete_patient(patient_id: int):
     conn = get_db_connection()
     cursor = conn.cursor()

@@ -4,7 +4,7 @@ from pathlib import Path
 from loguru import logger
 
 # Logger
-log_path = Path(__file__).resolve().parents[3] / "logs" / "create_db.log"
+log_path = Path(__file__).resolve().parents[5] / "logs" / "create_db.log"
 logger.add(
     log_path,
     rotation="1 MB",
@@ -12,10 +12,10 @@ logger.add(
     format="<level>{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}</level>",
 )
 
-logger.info("Début de la génération de la base de données.")
+logger.info("Début de la génération de la base de données 'Patients'.")
 
 # Définir le chemin du fichier CSV
-data_dir = Path(__file__).resolve().parents[3] / "data"
+data_dir = Path(__file__).resolve().parents[5] / "data"
 patients_file = data_dir / "insurance_anonymized.csv"
 
 # Connexion à la base de données SQLite
