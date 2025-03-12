@@ -34,6 +34,14 @@
 
 https://www.kaggle.com/datasets/mirichoi0218/insurance
 
+**Add your admin creditentials and secret key**
+
+Your admin creditentials will be used to create an administrator in the user database
+
+Your secret key will be used to hash the password of the users
+
+Both can be set up in the environment file, copy `.env example` file and rename it `.env`
+
 ## Execution
 
 **Run the app**

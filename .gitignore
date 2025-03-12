@@ -25,3 +25,4 @@ __init__.py
 patients.db
 tree.py
 .env
+backend/modules/db/users.db

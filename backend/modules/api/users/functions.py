@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from backend.modules.db.preparation.users.create_db import SessionLocal, User
-from passlib.context import CryptContext
+from backend.modules.api.users.security import verify_password
 from sqlalchemy.orm import Session
 from jose import jwt
 import os
@@ -11,8 +11,6 @@ load_dotenv()  # Charge les variables d'environnement depuis .env
 SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
-# Gestion du hashage des mots de passe
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def get_db():
     db = SessionLocal()
@@ -20,14 +18,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
-def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
-
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):

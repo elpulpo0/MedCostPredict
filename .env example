@@ -1,0 +1,7 @@
+# The secret key is used to hash passwords
+SECRET_KEY=
+
+# Admins creditentials are used to create an administrator in the user database
+ADMIN_NAME=
+ADMIN_EMAIL=
+ADMIN_PASSWORD=

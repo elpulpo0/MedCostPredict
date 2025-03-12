@@ -5,10 +5,13 @@ from backend.modules.api.patients.models import (
     PatientCreate,
     PatientUpdate,
 )
+from backend.modules.api.users.routes import users_router
 from fastapi import APIRouter, HTTPException
 from typing import List
 
 router = APIRouter()
+
+router.include_router(users_router, prefix="/users")
 
 
 @router.get(
