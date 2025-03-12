@@ -11,7 +11,7 @@ from typing import List
 
 router = APIRouter()
 
-router.include_router(users_router, prefix="/users")
+router.include_router(users_router)
 
 
 @router.get(
@@ -35,7 +35,14 @@ def get_patients():
     )
     patients = cursor.fetchall()
     conn.close()
-    return [Patient(**dict(row)) for row in patients]
+    columns = [
+            desc[0] for desc in cursor.description
+        ]
+    patients_list = [
+        dict(zip(columns, row)) for row in patients
+    ] 
+
+    return patients_list 
 
 
 @router.get(
@@ -65,7 +72,10 @@ def get_patient(patient_id: int):
     if patient is None:
         raise HTTPException(status_code=404, detail="Patient not found")
 
-    return Patient(**dict(patient))
+    columns = [desc[0] for desc in cursor.description]
+    patient_dict = dict(zip(columns, patient))
+
+    return patient_dict
 
 
 @router.post(

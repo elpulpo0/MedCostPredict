@@ -47,3 +47,4 @@ Both can be set up in the environment file, copy `.env example` file and rename 
 **Run the app**
 
 `uvicorn backend.main:app --reload`
+`cd frontend && streamlit run app.py`

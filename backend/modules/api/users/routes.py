@@ -6,6 +6,8 @@ from jose import JWTError, jwt
 import os
 from dotenv import load_dotenv
 from backend.modules.api.users.security import hash_password
+from backend.modules.db.preparation.users.create_db import User
+
 
 from backend.modules.api.users.models import UserCreate, UserResponse, Token
 from backend.modules.api.users.functions import (
@@ -116,24 +118,35 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
     "/users/",
     response_model=list[UserResponse],
     summary="Lister tous les utilisateurs",
-    description="Retourne la liste de tous les utilisateurs enregistrés dans la base de données.",
     tags=["Utilisateurs"],
 )
 def get_all_users(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ):
-    """Seuls l'administrateur peut voir tous les utilisateurs"""
+    """Seuls les administrateurs peuvent voir tous les utilisateurs."""
 
-    payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    email = payload.get("sub")
-    requesting_user = get_user_by_email(email, db)
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+        requesting_user = get_user_by_email(email, db)
 
-    if not requesting_user or requesting_user.role != "admin":
+        if not requesting_user:
+            raise HTTPException(
+                status_code=401, detail="Utilisateur non trouvé."
+            )
+
+        if requesting_user.role != "admin":
+            raise HTTPException(
+                status_code=403,
+                detail="Accès refusé : réservé aux administrateurs.",
+            )
+
+        return db.query(User).all()
+
+    except JWTError:
         raise HTTPException(
-            status_code=403, detail="Accès interdit, réservé aux admins."
+            status_code=401, detail="Token invalide ou expiré."
         )
-
-    return db.query(User).all()
 
 
 @users_router.delete(
