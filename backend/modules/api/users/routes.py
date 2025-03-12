@@ -33,7 +33,8 @@ users_router = APIRouter()
     "/users/",
     response_model=UserResponse,
     summary="Créer un nouvel utilisateur",
-    description="Ajoute un nouvel utilisateur avec un email, un mot de passe haché et un rôle.",
+    description="Ajoute un nouvel utilisateur avec un email, "
+    "un mot de passe haché et un rôle.",
     tags=["Utilisateurs"],
 )
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
@@ -51,7 +52,8 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     "/token",
     response_model=Token,
     summary="Connexion et génération d'un token JWT",
-    description="Vérifie les informations de connexion et retourne un token d'authentification JWT si les identifiants sont corrects.",
+    description="Vérifie les informations de connexion et retourne "
+    "un token d'authentification JWT si les identifiants sont corrects.",
     tags=["Utilisateurs"],
 )
 def login_for_access_token(
@@ -76,7 +78,8 @@ def login_for_access_token(
     "/users/me",
     response_model=UserResponse,
     summary="Récupérer les informations de l'utilisateur connecté",
-    description="Retourne les détails de l'utilisateur authentifié en utilisant son token.",
+    description="Retourne les détails de l'utilisateur "
+    "authentifié en utilisant son token.",
     tags=["Utilisateurs"],
 )
 def read_users_me(
@@ -104,7 +107,8 @@ def read_users_me(
     "/users/{user_id}",
     response_model=UserResponse,
     summary="Récupérer un utilisateur par son ID",
-    description="Retourne les informations d'un utilisateur spécifique en fonction de son ID.",
+    description="Retourne les informations d'un utilisateur "
+    "spécifique en fonction de son ID.",
     tags=["Utilisateurs"],
 )
 def get_user(user_id: int, db: Session = Depends(get_db)):

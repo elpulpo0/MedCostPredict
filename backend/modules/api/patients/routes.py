@@ -35,14 +35,10 @@ def get_patients():
     )
     patients = cursor.fetchall()
     conn.close()
-    columns = [
-            desc[0] for desc in cursor.description
-        ]
-    patients_list = [
-        dict(zip(columns, row)) for row in patients
-    ] 
+    columns = [desc[0] for desc in cursor.description]
+    patients_list = [dict(zip(columns, row)) for row in patients]
 
-    return patients_list 
+    return patients_list
 
 
 @router.get(

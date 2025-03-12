@@ -15,7 +15,7 @@ def patients_page():
     for patient in patients:
         st.write("**Nom** : Non disponible (anonymisé)")
         st.write("**Âge** : ", patient["age"])
-        
+
         # 🔹 Sexe du patient
         sexe = "Femme" if patient["sex"] == 1 else "Homme"
         st.write(f"**Sexe** : {sexe}")
@@ -25,7 +25,11 @@ def patients_page():
 
         # 🔹 Nombre d'enfants
         enfants = "Oui" if patient["children"] > 0 else "Non"
-        st.write(f"**Le patient a-t-il des enfants ?** : {enfants} ({patient['children']} enfant(s))")
+        st.write(
+            f"""**Le patient a-t-il des enfants ?** : {enfants} 
+            ({patient['children']} enfant(s))
+            """
+        )
 
         # 🔹 Fumeur ou non
         fumeur = "Oui" if patient["smoker"] == 1 else "Non"

@@ -39,7 +39,9 @@ def login_page():
             "Mot de passe", type="password", key="signup_password"
         )
         confirm_password = st.text_input(
-            "Confirmer le mot de passe", type="password", key="confirm_password"
+            "Confirmer le mot de passe",
+            type="password",
+            key="confirm_password",
         )
 
         signup_btn = st.button("S'inscrire")
@@ -54,7 +56,8 @@ def login_page():
                 )
                 if success:
                     st.success(
-                        "✅ Compte créé avec succès ! Vous pouvez maintenant vous connecter."
+                        "✅ Compte créé avec succès ! Vous pouvez "
+                        "maintenant vous connecter."
                     )
                 else:
                     st.error(f"❌ Erreur : {message}")

@@ -18,7 +18,8 @@ csv_path = (
 
 
 def analyze_csv(file_path=csv_path):
-    """Analyse le fichier CSV : vérifie les valeurs manquantes, affiche des stats générales et propose un filtrage."""
+    """Analyse le fichier CSV : vérifie les valeurs manquantes, 
+    affiche des stats générales et propose un filtrage."""
     try:
         df = pd.read_csv(file_path)
 
@@ -36,6 +37,7 @@ def analyze_csv(file_path=csv_path):
     except Exception as e:
         logger.error(f"❌ Erreur lors de l'analyse du fichier CSV : {e}")
         raise
+
 
 if __name__ == "__main__":
     df = analyze_csv()
