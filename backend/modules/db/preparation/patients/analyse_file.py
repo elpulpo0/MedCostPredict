@@ -18,7 +18,7 @@ csv_path = (
 
 
 def analyze_csv(file_path=csv_path):
-    """Analyse le fichier CSV : vérifie les valeurs manquantes, 
+    """Analyse le fichier CSV : vérifie les valeurs manquantes,
     affiche des stats générales et propose un filtrage."""
     try:
         df = pd.read_csv(file_path)

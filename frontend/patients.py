@@ -26,7 +26,7 @@ def patients_page():
         # 🔹 Nombre d'enfants
         enfants = "Oui" if patient["children"] > 0 else "Non"
         st.write(
-            f"""**Le patient a-t-il des enfants ?** : {enfants} 
+            f"""**Le patient a-t-il des enfants ?** : {enfants}
             ({patient['children']} enfant(s))
             """
         )
