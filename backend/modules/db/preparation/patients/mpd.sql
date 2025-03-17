@@ -22,13 +22,13 @@ CREATE TABLE Patient (
     name VARCHAR(255) NOT NULL,
     surname VARCHAR(255) NOT NULL,
     age INT NOT NULL,
-    id_sex INT,
+    sex INT,
     bmi FLOAT,
     children INT,
     smoker INT,
     region INT,
     charges FLOAT,
-    FOREIGN KEY (id_sex) REFERENCES Sexe(id_sex),
+    FOREIGN KEY (sex) REFERENCES Sexe(id_sex),
     FOREIGN KEY (smoker) REFERENCES Fumeur(id_smoker),
     FOREIGN KEY (region) REFERENCES Region(id_region)
 );

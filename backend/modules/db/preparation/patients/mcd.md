@@ -1,5 +1,3 @@
-## Entités
-
 ### Patient
 | Attribut               | Type     | Clé         |
 |------------------------|----------|-------------|
@@ -7,7 +5,7 @@
 | name                   | Varchar  |             |
 | surname                | Varchar  |             |
 | age                    | Int      |             |
-| id_sex                 | Int      | FK (Sexe)   |
+| sex                    | Int      | FK (Sexe)   |
 | bmi                    | Float    |             |
 | children               | Int      |             |
 | smoker                 | Int      | FK (Fumeur) |

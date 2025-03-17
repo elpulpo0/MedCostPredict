@@ -1,5 +1,5 @@
 from backend.modules.api.patients.functions import get_db_connection
-from backend.utils.anonymize import anonymize_name
+from backend.utils.anonymize import anonymize
 from backend.modules.api.patients.models import (
     Patient,
     PatientCreate,
@@ -85,8 +85,8 @@ def create_patient(patient: PatientCreate):
     cursor = conn.cursor()
 
     # Anonymisation du nom et prénom
-    anonymized_name = anonymize_name(patient.name)
-    anonymized_surname = anonymize_name(patient.surname)
+    anonymized_name = anonymize(patient.name)
+    anonymized_surname = anonymize(patient.surname)
 
     # Récupérer l'ID correspondant au sexe
     cursor.execute("SELECT id_sex FROM Sexe WHERE sexe = ?", (patient.sex,))

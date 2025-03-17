@@ -8,13 +8,13 @@ CREATE TABLE Patient (
     name VARCHAR(255),
     surname VARCHAR(255),
     age INT,
-    id_sex INT,
+    sex INT,
     bmi FLOAT,
     children INT,
     smoker INT,
     region INT,
     charges FLOAT,
-    FOREIGN KEY (id_sex) REFERENCES Sexe(id_sex),
+    FOREIGN KEY (sex) REFERENCES Sexe(id_sex),
     FOREIGN KEY (smoker) REFERENCES Fumeur(id_smoker),
     FOREIGN KEY (region) REFERENCES Region(id_region)
 );
@@ -33,6 +33,6 @@ CREATE TABLE Region (
 ```
 ## Relations
 
-- Patient → id_sex → Sexe : Chaque patient est associé à un sexe.
+- Patient → sex → Sexe : Chaque patient est associé à un sexe.
 - Patient → smoker → Fumeur : Chaque patient a un statut de fumeur.
 - Patient → region → Région : Chaque patient est lié à une région.
