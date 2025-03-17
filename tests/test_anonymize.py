@@ -5,7 +5,7 @@ import pandas as pd
 # Ajouter le répertoire parent à sys.path si nécessaire
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 
-from backend.utils.anonymize import anonymize_name
+from backend.utils.security import anonymize_name
 
 def test_anonymization():
     # Exemple de données de test

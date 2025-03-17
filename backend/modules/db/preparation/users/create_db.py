@@ -3,20 +3,14 @@ from sqlalchemy import Column, Integer, String, Boolean, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
 from pathlib import Path
 from dotenv import load_dotenv
-from loguru import logger
-from backend.modules.api.users.security import hash_password
+from backend.utils.security import anonymize, hash_password
+from backend.utils.logger import setup_logger
+
 
 # Charger les variables d'environnement
 load_dotenv()
 
-# Définition du chemin du fichier de logs
-log_path = Path(__file__).resolve().parents[5] / "logs" / "create_db.log"
-logger.add(
-    log_path,
-    rotation="1 MB",
-    level="INFO",
-    format="<level>{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}</level>",
-)
+logger = setup_logger(log_name="create_users_db")
 
 logger.info("Début de la vérification et génération de la base de données.")
 
@@ -35,9 +29,9 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    full_name = Column(String, index=True)
+    name = Column(String, index=True)
     email = Column(String, unique=True, index=True)
-    hashed_password = Column(String)
+    password = Column(String)
     is_active = Column(Boolean, default=True)
     role = Column(String, default="user")
 
@@ -76,13 +70,11 @@ def create_admin_user():
     admin_email = os.getenv("ADMIN_EMAIL", "admin@exemple.com")
     admin_password = os.getenv("ADMIN_PASSWORD", "SuperSecure123")
 
-    hashed_password = hash_password(admin_password)
-
     # Création de l'admin
     admin = User(
-        full_name=admin_name,
-        email=admin_email,
-        hashed_password=hashed_password,
+        name=anonymize(admin_name),
+        email=anonymize(admin_email),
+        password=hash_password(admin_password),
         role="admin",
         is_active=True,
     )

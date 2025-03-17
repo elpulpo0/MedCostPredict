@@ -5,7 +5,7 @@ from datetime import timedelta
 from jose import JWTError, jwt
 import os
 from dotenv import load_dotenv
-from backend.modules.api.users.security import hash_password
+from backend.utils.security import hash_password, anonymize
 from backend.modules.db.preparation.users.create_db import User
 
 
@@ -30,22 +30,36 @@ users_router = APIRouter()
 
 
 @users_router.post(
-    "/users/",
-    response_model=UserResponse,
-    summary="Créer un nouvel utilisateur",
-    description="Ajoute un nouvel utilisateur avec un email, "
-    "un mot de passe haché et un rôle.",
+    "/token",
+    response_model=Token,
+    summary="Connexion et génération d'un token JWT",
+    description="Vérifie les informations de connexion et retourne "
+    "un token d'authentification JWT si les identifiants sont corrects.",
     tags=["Utilisateurs"],
 )
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    hashed_pw = hash_password(user.password)
-    db_user = User(
-        full_name=user.full_name, email=user.email, hashed_password=hashed_pw
+def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+):
+    # Anonymiser l'email fourni
+    anonymized_email = anonymize(form_data.username)
+
+    # Authentifier l'utilisateur avec l'email anonymisé
+    user = authenticate_user(db, anonymized_email, form_data.password)
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    # Créer le token d'accès
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": anonymized_email}, expires_delta=access_token_expires
     )
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @users_router.post(
@@ -60,13 +74,16 @@ def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
-    user = authenticate_user(db, form_data.username, form_data.password)
+    user = authenticate_user(
+        db, form_data.username, form_data.password
+    )
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
@@ -92,12 +109,19 @@ def read_users_me(
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
+        anonymized_email: str = payload.get(
+            "sub"
+        )  # Utiliser l'email anonymisé dans le payload
+
+        if anonymized_email is None:
             raise credentials_exception
-        user = get_user_by_email(email, db)
+
+        # Récupérer l'utilisateur en utilisant l'email anonymisé
+        user = get_user_by_email(anonymized_email, db)
+
         if user is None:
             raise credentials_exception
+
         return user
     except JWTError:
         raise credentials_exception

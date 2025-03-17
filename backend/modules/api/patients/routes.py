@@ -1,5 +1,5 @@
 from backend.modules.api.patients.functions import get_db_connection
-from backend.utils.anonymize import anonymize
+from backend.utils.security import anonymize
 from backend.modules.api.patients.models import (
     Patient,
     PatientCreate,

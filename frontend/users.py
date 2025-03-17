@@ -13,7 +13,7 @@ def users_page():
         return
 
     for user in users:
-        st.write(f"**Nom** : {user['full_name']}")
+        st.write(f"**Nom** : {user['name']}")
         st.write(f"**Email** : {user['email']}")
         st.write(f"**Rôle** : {user['role']}")
         st.write("---")

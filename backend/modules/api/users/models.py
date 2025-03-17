@@ -1,17 +1,18 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, constr
 
 
 # Modèle Pydantic pour validation
 class UserCreate(BaseModel):
-    full_name: str
+    name: str
     email: EmailStr
     password: str
 
 
+# Modèle de réponse avec un email anonymisé, en utilisant constr(min_length=1)
 class UserResponse(BaseModel):
     id: int
-    full_name: str
-    email: EmailStr
+    name: str
+    email: constr(min_length=1)  # type: ignore
     is_active: bool
     role: str
 

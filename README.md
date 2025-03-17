@@ -38,7 +38,7 @@ https://www.kaggle.com/datasets/mirichoi0218/insurance
 
 - Your admin creditentials will be used to create an administrator in the user database
 
-- Your secret key will be used to hash the password of the users
+- Your secret key will be used to handle the authentification of the users, it has to be a 64 hexa chain
 
 Both can be set up in the environment file, copy `.env example` file and rename it `.env`
 
