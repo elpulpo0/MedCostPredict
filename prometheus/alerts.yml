@@ -1,0 +1,11 @@
+groups:
+  - name: frontend-alerts
+    rules:
+      - alert: frontend_down
+        expr: absent(container_memory_usage_bytes{name="medcostpredict_frontend"})
+        for: 5s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Frontend down"
+          description: "Frontend container is down for more than 5 seconds."

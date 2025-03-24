@@ -7,6 +7,7 @@ __pycache__/
 *.pyo
 *.pyd
 __init__.py
+*.toml
 
 # Pytest
 .pytest_cache
@@ -27,3 +28,4 @@ tree.py
 .env
 backend/modules/db/users.db
 TODO.md
+INSPI

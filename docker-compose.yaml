@@ -1,0 +1,123 @@
+services:
+  backend:
+    container_name: medcostpredict_backend
+    # image: "${DOCKER_IMAGE_BACK}"
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - data:/app/data
+      - logs:/app/logs
+    env_file:
+      - .env     
+    ports:
+      - "${PORT_BACK}:8000"
+
+  frontend:
+    container_name: medcostpredict_frontend
+    # image: "${DOCKER_IMAGE_FRONT}"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - backend
+    env_file:
+      - .env     
+    ports:
+      - "${PORT_FRONT}:8501"
+
+  grafana:
+    container_name: monitoring_grafana
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    links:
+      - prometheus
+    networks:
+      - monitoring_net
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+  prometheus:
+    container_name: monitoring_prometheus
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml
+      - prometheus-data:/prometheus
+    networks:
+      - monitoring_net
+
+  node_exporter:
+    container_name: monitoring_node_exporter
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"
+    networks:
+      - monitoring_net
+      
+  # cadvisor:
+  #   image: gcr.io/cadvisor/cadvisor:v0.52.1
+  #   container_name: monitoring_cadvisor
+  #   volumes:
+  #     - /:/rootfs:ro
+  #     - /var/run:/var/run:ro
+  #     - /sys:/sys:ro
+  #     - /var/lib/docker/:/var/lib/docker:ro
+  #     - /dev/disk/:/dev/disk:ro
+  #   ports:
+  #     - "8098:8080"
+  #   devices:
+  #     - /dev/kmsg
+  #   privileged: true
+  #   networks:
+  #     - monitoring_net
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: monitoring_alertmanager
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    restart: unless-stopped
+    ports:
+      - "9093:9093"
+    networks:
+      - monitoring_net
+    labels:
+      org.label-schema.group: "monitoring"
+
+  versus-incident:
+    image: ghcr.io/versuscontrol/versus-incident:latest
+    container_name: versus-incident
+    ports:
+      - "3001:3001"
+    networks:
+      - monitoring_net
+    environment:
+      - TELEGRAM_ENABLE=true
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - PORT=3001
+    volumes:
+      - ./versus-incident/config/config.yml:/app/versus-incident/config/config.yml
+      - ./versus-incident/config/telegram_message.tmpl:/app/versus-incident/config/telegram_message.tmpl
+    restart: unless-stopped
+
+networks:
+  monitoring_net:
+    driver: bridge
+
+volumes:
+  data:
+  logs:
+  grafana-data:
+  prometheus-data:

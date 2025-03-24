@@ -1,0 +1,10 @@
+name: versus
+host: 0.0.0.0
+port: 3001
+
+alert:
+  telegram:
+    enable: true
+    bot_token: ${TELEGRAM_BOT_TOKEN}
+    chat_id: ${TELEGRAM_CHAT_ID}
+    template_path: "/app/versus-incident/config/telegram_message.tmpl"

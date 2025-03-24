@@ -52,15 +52,6 @@ def get_user_by_email(email: str, db: Session):
     # Effectuer la recherche dans la base de données avec l'email anonymisé
     user = db.query(User).filter(User.email == email).first()
 
-    if user:
-        logger.info(
-            f"Utilisateur trouvé : {user.name} (email anonymisé : {user.email})"
-        )
-    else:
-        logger.info(
-            f"Aucun utilisateur trouvé avec l'email anonymisé : {email}"
-        )
-
     return user
 
 
@@ -80,5 +71,5 @@ def authenticate_user(db: Session, email: str, password: str):
         logger.info("Mot de passe invalide.")
         return False
 
-    logger.info(f"Utilisateur authentifié avec succès : {user.email}")
+    logger.info(f"Utilisateur authentifié avec succès")
     return user

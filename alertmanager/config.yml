@@ -1,0 +1,26 @@
+global:
+  resolve_timeout: 5m
+
+# route:
+#   group_by: ['alertname']
+#   group_wait: 30s
+#   group_interval: 5m
+#   repeat_interval: 1h
+#   receiver: 'telegram'
+
+# receivers:
+#   - name: 'telegram'
+#     telegram_configs:
+#       - api_url: 'https://api.telegram.org'
+#         bot_token: '7311002539:AAFQG5-Fzd1R9oadrEsQu6WfDiLvxby_UBw'
+#         chat_id: 2067418991
+
+route:
+  receiver: 'versus-incident'
+  group_wait: 10s
+
+receivers:
+- name: 'versus-incident'
+  webhook_configs:
+  - url: 'http://versus-host:3001/api/incidents' # Versus API endpoint
+    send_resolved: false
