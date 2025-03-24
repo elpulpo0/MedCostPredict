@@ -1,17 +1,4 @@
 🚨 <b>Critical Error Detected!</b> 🚨
-📌 <b>Service:</b> {{ .ServiceName }}
-
+📌 <b>Service:</b> {{.ServiceName}}
 ⚠️ <b>Error Details:</b>
-{{- if .Logs }}
-<pre>{{ printf "%v" .Logs }}</pre>
-{{- else }}
-No logs available.
-{{- end }}
-
----
-{{- $logs := printf "%v" .Logs }}
-{{- if and .Logs (contains $logs "error") }}
-This is a critical error
-{{- else }}
-This is a warning error
-{{- end }}
+{{.Logs}}

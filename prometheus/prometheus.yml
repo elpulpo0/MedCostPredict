@@ -1,8 +1,16 @@
 global:
-  scrape_interval: 15s
+  scrape_interval:     15s
+  evaluation_interval: 15s
 
 rule_files:
   - "alerts.yml"
+
+alerting:
+  alertmanagers:
+  - scheme: http
+    static_configs:
+    - targets: 
+      - 'alertmanager:9093'
 
 scrape_configs:
   - job_name: 'prometheus'
@@ -20,7 +28,3 @@ scrape_configs:
   # - job_name: 'cadvisor'
   #   static_configs:
   #     - targets: ['cadvisor:8080']
-
-  - job_name: 'versus-incident'
-    static_configs:
-      - targets: ['versus-incident:3001']
