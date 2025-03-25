@@ -5,7 +5,6 @@ bcrypt==3.2.2
 blinker==1.7.0
 certifi==2023.11.17
 chardet==5.2.0
-cliapp==1.20180812.1
 click==8.1.6
 cloud-init==24.4
 cmdtest==0.32+git
